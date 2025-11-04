@@ -21,7 +21,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: '7.2'
           tools: php-cs-fixer
 
       # 差分が検出されたファイルかつ.php-cs-fixer.php内で定義したphpファイルのみをphp-cs-fixerに回す
