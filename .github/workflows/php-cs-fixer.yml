@@ -3,7 +3,6 @@ name: PHP CS Fixer
 on:
   pull_request:
     types: [labeled, synchronize]
-  workflow_dispatch:
 
 jobs:
   php-cs-fixer:
