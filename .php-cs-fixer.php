@@ -44,6 +44,8 @@ return $config
         'blank_line_after_opening_tag' => true,
         'braces' => [
             'position_after_functions_and_oop_constructs' => 'next',
+            'position_after_control_structures' => 'same',
+            'position_after_anonymous_constructs' => 'same',
         ],
         'cast_spaces' => [
             'space' => 'single',
@@ -84,13 +86,22 @@ return $config
         'no_empty_comment' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,
-        'no_extra_blank_lines' => true,
+        'no_extra_blank_lines' => [
+            'tokens' => [
+                'extra',
+                'throw',
+                'use',
+                'use_trait',
+            ],
+        ],
         'no_leading_import_slash' => true,
         'no_leading_namespace_whitespace' => true,
         'no_multiline_whitespace_around_double_arrow' => true,
         'no_short_bool_cast' => true,
         'no_singleline_whitespace_before_semicolons' => true,
-        'no_spaces_around_offset' => true,
+        'no_spaces_around_offset' => [
+            'positions' => ['inside', 'outside'],
+        ],
         'no_superfluous_phpdoc_tags' => false,
         'no_trailing_comma_in_list_call' => true,
         'no_trailing_comma_in_singleline_array' => true,
