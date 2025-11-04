@@ -39,4 +39,3 @@ class Article extends Model
         return $this->belongsToMany('App\Tag')->withTimestamps();
     }
 }
-
