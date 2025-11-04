@@ -2,16 +2,15 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+
+use Illuminate\Database\Eloquent\Model;
 class Article extends Model
 {
-    protected $fillable = [
-        'title',
-        'body',
-    ];
+    protected $fillable = ['title','body',];
     
     public function user(): BelongsTo
     {
