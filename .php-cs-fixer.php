@@ -97,7 +97,11 @@ return $config
                 'extra',
                 'throw',
                 'use',
-                'use_trait',
+            ],
+        ],
+        'class_attributes_separation' => [
+            'elements' => [
+                'trait_import' => 'none',
             ],
         ],
         'no_leading_import_slash' => true,
