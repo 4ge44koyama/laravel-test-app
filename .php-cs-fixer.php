@@ -19,6 +19,7 @@ return $config
         '@PSR2' => true, // ToDo:バージョンアップ後は@PSR12に変更する
         '@PhpCsFixer:risky' => false, // trueにするとriskyルールを全て許可してしまうためfalseにしておいて、リプレイス時は各項目ごとに個別指定する
         'array_syntax' => ['syntax' => 'short'],
+        'array_indentation' => true,
         'binary_operator_spaces' => [
             'operators' => [
                 '=' => 'single_space',
@@ -154,6 +155,9 @@ return $config
         'standardize_not_equals' => true,
         'ternary_operator_spaces' => true,
         'ternary_to_null_coalescing' => true,
+        'trailing_comma_in_multiline' => [
+            'elements' => ['arrays'],
+        ],
         'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
         ])
