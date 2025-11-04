@@ -14,8 +14,7 @@ class Article extends Model
         'body',
     ];
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo{
         return $this->belongsTo('App\User');
     }
 
@@ -26,9 +25,7 @@ class Article extends Model
 
     public function isLikedBy(?User $user): bool
     {
-        return $user
-            ? (bool) $this->likes->where('id', $user->id)->count()
-            : false;
+        return $user ? (bool) $this->likes->where('id', $user->id)->count() : false;
     }
 
     public function getCountLikesAttribute(): int
