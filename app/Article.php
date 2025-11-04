@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Article extends Model
 {
-    protected $fillable = ['title','body'];
+    protected $fillable = [
+        'title',
+     'body'
+    ];
 
     public function user(): BelongsTo
     {
@@ -16,7 +19,8 @@ class Article extends Model
 
     public function likes(): BelongsToMany
     {
-        return $this->belongsToMany('App\User', 'likes')->withTimestamps();
+        return $this->belongsToMany('App\User', 'likes')
+                    ->withTimestamps();
     }
 
     public function isLikedBy(?User $user): bool
@@ -28,11 +32,13 @@ class Article extends Model
 
     public function getCountLikesAttribute(): int
     {
-        return $this->likes->count();
+        return $this->likes
+                    ->count();
     }
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany('App\Tag')->withTimestamps();
+        return $this->belongsToMany('App\Tag')
+                   ->withTimestamps();
     }
 }
