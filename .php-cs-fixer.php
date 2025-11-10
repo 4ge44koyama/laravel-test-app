@@ -80,7 +80,6 @@ return $config
         'indentation_type' => true,
         'is_null' => false,
         'line_ending' => true,
-        'linebreak_after_opening_tag' => true,
         'lowercase_cast' => true,
         'magic_constant_casing' => true,
         'magic_method_casing' => true,
