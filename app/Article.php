@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +11,7 @@ class Article extends Model
         'title',
         'body',
     ];
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
@@ -25,8 +24,8 @@ class Article extends Model
 
     public function isLikedBy(?User $user): bool
     {
-        return $user
-            ? (bool)$this->likes->where('id', $user->id)->count()
+        return $user !== null
+            ? (bool) $this->likes->where('id', $user->id)->count()
             : false;
     }
 
