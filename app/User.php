@@ -68,8 +68,8 @@ class User extends Authenticatable
 
     public function isFollowedBy(?User $user): bool
     {
-        return $user
-            ? (bool)$this->followers->where('id', $user->id)->count()
+        return $user !== null
+            ? (bool) $this->followers->where('id', $user->id)->count()
             : false;
     }
 
