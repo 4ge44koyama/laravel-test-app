@@ -63,7 +63,6 @@ return $config
         ],
         'date_time_immutable' => false,
         'declare_parentheses' => true,
-        'declare_strict_types' => false,
         'explicit_indirect_variable' => true,
         'explicit_string_variable' => true,
         'final_class' => false,
