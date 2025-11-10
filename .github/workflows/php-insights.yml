@@ -63,3 +63,72 @@ jobs:
           cat phpinsights.txt | reviewdog -efm="%f:%l:%c: %m" \
             -name="PHP Insights" -reporter=github-pr-review \
             -filter-mode=diff_context -fail-on-error=false
+
+      - name: Comment PR with Summary
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('phpinsights.json', 'utf8'));
+
+            // サマリー情報を取得
+            const summary = results.summary || {};
+
+            // スコアに応じた絵文字
+            const getEmoji = (score) => {
+              if (score >= 90) return '🟢';
+              if (score >= 70) return '🟡';
+              return '🔴';
+            };
+
+            // コメント本文を作成
+            let comment = '## 📊 PHP Insights Summary\n\n';
+            comment += '| Metric | Score |\n';
+            comment += '|--------|-------|\n';
+            comment += `| ${getEmoji(summary.code)} Code | **${summary.code}%** |\n`;
+            comment += `| ${getEmoji(summary.complexity)} Complexity | **${summary.complexity}%** |\n`;
+            comment += `| ${getEmoji(summary.architecture)} Architecture | **${summary.architecture}%** |\n`;
+            comment += `| ${getEmoji(summary.style)} Style | **${summary.style}%** |\n`;
+
+            // セキュリティ問題の数
+            const securityIssues = summary['security issues'] || 0;
+            comment += `| ${securityIssues === 0 ? '✅' : '⚠️'} Security Issues | **${securityIssues}** |\n\n`;
+
+            // カテゴリ別の問題数
+            const codeIssues = (results.Code || []).length;
+            const styleIssues = (results.Style || []).length;
+            const architectureIssues = (results.Architecture || []).length;
+
+            comment += '### 📋 Issues Breakdown\n\n';
+            comment += `- 🔧 Code: ${codeIssues} issues\n`;
+            comment += `- 🎨 Style: ${styleIssues} issues\n`;
+            comment += `- 🏗️ Architecture: ${architectureIssues} issues\n\n`;
+
+            // トップ5の問題
+            const allIssues = [...(results.Code || []), ...(results.Style || [])];
+            const issuesWithLine = allIssues.filter(i => i.file && i.line);
+
+            if (issuesWithLine.length > 0) {
+              comment += '### 🔍 Top Issues\n\n';
+              const top5 = issuesWithLine.slice(0, 5);
+              top5.forEach((issue, idx) => {
+                const file = issue.file.replace(/^.*\/laravel-test-app\//, '');
+                comment += `${idx + 1}. **${issue.title}** in \`${file}:${issue.line}\`\n`;
+              });
+
+              if (issuesWithLine.length > 5) {
+                comment += `\n_...and ${issuesWithLine.length - 5} more issues_\n`;
+              }
+            }
+
+            comment += '\n---\n';
+            comment += '_💡 Detailed feedback available in the Files Changed tab_';
+
+            // PRにコメント投稿
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
