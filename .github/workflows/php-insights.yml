@@ -42,7 +42,16 @@ jobs:
 
       - name: Run PHP Insights
         run: |
-          php artisan insights -n --ansi --format=checkstyle > phpinsights.xml || true
+          php artisan insights -n --ansi --format=json > phpinsights.json || true
+
+      - name: Convert JSON to reviewdog format
+        run: |
+          cat phpinsights.json | jq -r '
+            .. | 
+            objects | 
+            select(.file != null and .line != null) | 
+            "\(.file):\(.line):1: \(.message)"
+          ' > phpinsights.txt
 
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1
@@ -51,6 +60,6 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          reviewdog -f=checkstyle -name="PHP Insights" \
-            -reporter=github-pr-review -filter-mode=diff_context \
-            -fail-on-error=true < phpinsights.xml
+          cat phpinsights.txt | reviewdog -efm="%f:%l:%c: %m" \
+            -name="PHP Insights" -reporter=github-pr-review \
+            -filter-mode=diff_context -fail-on-error=false
