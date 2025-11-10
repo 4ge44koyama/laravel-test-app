@@ -1,4 +1,4 @@
-name: PHP Insights
+name: PHP Insights(reviewdog)
 
 on:
   pull_request:
@@ -9,6 +9,9 @@ on:
 jobs:
   php-insights:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Pull Requestへのコメントに必要
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -29,14 +32,25 @@ jobs:
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
-            path: ${{ steps.composer-cache.outputs.dir }}
-            key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-            restore-keys: ${{ runner.os }}-composer-
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
         run: |
-          composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+          composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --prefer-dist
 
       - name: Run PHP Insights
         run: |
-          php artisan insights -n --ansi --format=github-action
+          php artisan insights -n --ansi --format=format=checkstyle > phpinsights.xml || true
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Report via reviewdog
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          reviewdog -f=checkstyle -name="PHP Insights" \
+            -reporter=github-pr-review -filter-mode=diff_context \
+            -fail-on-error=true < phpinsights.xml
