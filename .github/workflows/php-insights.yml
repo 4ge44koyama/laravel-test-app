@@ -42,7 +42,7 @@ jobs:
 
       - name: Run PHP Insights
         run: |
-          php artisan insights -n --ansi --format=format=checkstyle > phpinsights.xml || true
+          php artisan insights -n --ansi --format=checkstyle > phpinsights.xml || true
 
       - name: Setup reviewdog
         uses: reviewdog/action-setup@v1
