@@ -16,6 +16,7 @@
 </head>
 
 <body>
+    <!-- これはフォーマットの対象にならない -->
     <div id="app">
         @yield('content')
     </div>
