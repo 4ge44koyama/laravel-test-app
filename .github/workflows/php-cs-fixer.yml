@@ -87,10 +87,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref }}
-
-      # Pull Requestにphp-insightsのラベルが付与されていなければ付与する
-      - name: Add php-insights label to PR
-        uses: actions-ecosystem/action-add-labels@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: php-insights
