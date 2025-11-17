@@ -43,26 +43,24 @@ return $config
         ],
         'blank_line_after_namespace' => true,
         'blank_line_after_opening_tag' => true,
-        'braces_position' => [
-            'functions_opening_brace' => 'next_line_unless_newline_at_signature_end',
-            'classes_opening_brace' => 'next_line_unless_newline_at_signature_end',
-            'anonymous_classes_opening_brace' => 'same_line',
-            'control_structures_opening_brace' => 'same_line',
-            'anonymous_functions_opening_brace' => 'same_line',
+        'blank_line_before_statement' => [
+            'statements' => ['return'],
         ],
-        'control_structure_braces' => true,
-        'control_structure_continuation_position' => ['position' => 'same_line'],
-        'statement_indentation' => true,
-        'no_multiple_statements_per_line' => true,
+        'blank_line_before_return' => true,
+        'braces' => [
+            'allow_single_line_closure' => true,
+            'position_after_functions_and_oop_constructs' => 'next',
+            'position_after_control_structures' => 'same',
+            'position_after_anonymous_constructs' => 'same',
+        ],
         'cast_spaces' => [
             'space' => 'single',
         ],
-        'compact_nullable_type_declaration' => true,
+        'compact_nullable_typehint' => true,
         'concat_space' => [
             'spacing' => 'one',
         ],
         'date_time_immutable' => false,
-        'declare_parentheses' => true,
         'explicit_indirect_variable' => true,
         'explicit_string_variable' => true,
         'final_class' => false,
@@ -70,7 +68,7 @@ return $config
         'function_declaration' => [
             'closure_function_spacing' => 'one',
         ],
-        'type_declaration_spaces' => true,
+        'function_typehint_space' => true,
         'global_namespace_import' => [
             'import_classes' => true,
             'import_constants' => true,
@@ -85,7 +83,7 @@ return $config
         'mb_str_functions' => false,
         'method_chaining_indentation' => true,
         'native_function_casing' => true,
-        'native_type_declaration_casing' => true,
+        'native_function_type_declaration_casing' => true,
         'no_blank_lines_after_class_opening' => true,
         'no_blank_lines_after_phpdoc' => true,
         'no_empty_comment' => true,
@@ -100,7 +98,8 @@ return $config
         ],
         'class_attributes_separation' => [
             'elements' => [
-                'trait_import' => 'none',
+                'method' => 'one',
+                'property' => 'one',
             ],
         ],
         'no_leading_import_slash' => true,
@@ -112,10 +111,11 @@ return $config
             'positions' => ['inside', 'outside'],
         ],
         'no_superfluous_phpdoc_tags' => false,
-        'no_trailing_comma_in_singleline' => true,
+        'no_trailing_comma_in_list_call' => true,
+        'no_trailing_comma_in_singleline_array' => true,
         'no_trailing_whitespace' => true,
         'no_trailing_whitespace_in_comment' => true,
-        'no_unneeded_braces' => true,
+        'no_unneeded_curly_braces' => true,
         'no_unneeded_final_method' => false,
         'no_unused_imports' => true,
         'no_whitespace_before_comma_in_array' => true,
@@ -131,7 +131,7 @@ return $config
             ],
         ],
         'phpdoc_align' => [
-            'align' => 'left',
+            'align' => 'vertical',
         ],
         'phpdoc_indent' => true,
         'phpdoc_order' => true,
@@ -149,7 +149,7 @@ return $config
         'short_scalar_cast' => true,
         'simplified_if_return' => true,
         'simplified_null_return' => true,
-        'blank_lines_before_namespace' => ['min_line_breaks' => 1, 'max_line_breaks' => 1],
+        'single_blank_line_before_namespace' => true,
         'standardize_not_equals' => true,
         'ternary_operator_spaces' => true,
         'ternary_to_null_coalescing' => true,
@@ -158,5 +158,5 @@ return $config
         ],
         'trim_array_spaces' => true,
         'unary_operator_spaces' => true,
-        ])
+    ])
     ->setFinder($finder);
