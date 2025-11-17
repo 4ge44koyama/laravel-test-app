@@ -4,14 +4,16 @@ on:
   pull_request:
     paths:
       - '**.php'
-    types: [opened, synchronize, reopened]
+    types: [labeled, synchronize]
 
 jobs:
   php-insights:
+    if: contains(github.event.pull_request.labels.*.name, 'php-insights')
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write # Pull Requestへのコメントに必要
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
