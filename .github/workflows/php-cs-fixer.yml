@@ -25,6 +25,10 @@ jobs:
           php-version: '7.4'
           tools: php-cs-fixer:2
 
+      # メンテナンス用にバージョン確認をしておく
+      - name: Check PHP CS Fixer version
+        run: php-cs-fixer --version
+
       # 差分が検出されたファイルかつ.php-cs-fixer.php内で定義したphpファイルのみをphp-cs-fixerに回す
       - name: Get changed PHP files
         id: changed-files
