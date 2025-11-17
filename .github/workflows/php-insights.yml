@@ -1,10 +1,10 @@
-name: PHP Insights(reviewdog)
+name: PHP-Insights
 
 on:
   # php-cs-fixer.ymlが実行されたときに連動して実行
   workflow_run:
     workflows:
-      - "PHP CS Fixer"
+      - "PHP-CS-Fixer"
     types:
       - completed
 
