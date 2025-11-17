@@ -1,14 +1,16 @@
 name: PHP Insights(reviewdog)
 
 on:
-  pull_request:
-    paths:
-      - '**.php'
-    types: [labeled, synchronize]
+  # php-cs-fixer.ymlが実行されたときに連動して実行
+  workflow_run:
+    workflows:
+      - ".github/workflows/php-cs-fixer.yml"
+    types:
+      - completed
 
 jobs:
   php-insights:
-    if: contains(github.event.pull_request.labels.*.name, 'php-insights')
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -134,3 +136,10 @@ jobs:
               issue_number: context.issue.number,
               body: comment
             });
+
+      # Pull Requestにphp-insightsのラベルが付与されていなければ付与する
+      - name: Add php-insights label to PR
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: php-insights
