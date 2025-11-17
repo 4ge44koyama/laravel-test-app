@@ -4,7 +4,7 @@ on:
   # php-cs-fixer.ymlが実行されたときに連動して実行
   workflow_run:
     workflows:
-      - ".github/workflows/php-cs-fixer.yml"
+      - "PHP CS Fixer"
     types:
       - completed
 
