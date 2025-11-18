@@ -76,6 +76,14 @@ jobs:
             const fs = require('fs');
             const results = JSON.parse(fs.readFileSync('phpinsights.json', 'utf8'));
 
+            // workflow_runイベントからPR番号を取得
+            const pullRequests = context.payload.workflow_run.pull_requests;
+            if (!pullRequests || pullRequests.length === 0) {
+              console.log('No pull request found for this workflow run');
+              return;
+            }
+            const prNumber = pullRequests[0].number;
+
             // サマリー情報を取得
             const summary = results.summary || {};
 
@@ -133,7 +141,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
+              issue_number: prNumber,
               body: comment
             });
 
