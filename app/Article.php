@@ -20,7 +20,8 @@ class Article extends Model
 
     public function likes(): BelongsToMany
     {
-        return $this->belongsToMany('App\User', 'likes')->withTimestamps();
+        return $this->belongsToMany('App\User', 'likes')
+            ->withTimestamps();
     }
 
     public function isLikedBy(?User $user): bool
@@ -37,6 +38,7 @@ class Article extends Model
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany('App\Tag')->withTimestamps();
+        return $this->belongsToMany('App\Tag')
+            ->withTimestamps();
     }
 }
