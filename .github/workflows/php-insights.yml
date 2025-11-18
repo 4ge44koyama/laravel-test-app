@@ -147,7 +147,37 @@ jobs:
 
       # Pull Requestにphp-insightsのラベルが付与されていなければ付与する
       - name: Add php-insights label to PR
-        uses: actions-ecosystem/action-add-labels@v1
+        uses: actions/github-script@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          labels: php-insights
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // workflow_runイベントからPR番号を取得
+            const pullRequests = context.payload.workflow_run.pull_requests;
+            if (!pullRequests || pullRequests.length === 0) {
+              console.log('No pull request found for this workflow run');
+              return;
+            }
+            const prNumber = pullRequests[0].number;
+
+            // 既存のラベルを取得
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+
+            // php-insightsラベルが既に付与されているか確認
+            const hasLabel = issue.labels.some(label => label.name === 'php-insights');
+
+            // ラベルが付与されていなければ追加
+            if (!hasLabel) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: ['php-insights']
+              });
+              console.log('Added php-insights label to PR #' + prNumber);
+            } else {
+              console.log('PR #' + prNumber + ' already has php-insights label');
+            }
