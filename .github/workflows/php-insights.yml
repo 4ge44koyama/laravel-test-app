@@ -117,7 +117,7 @@ jobs:
             comment += '\n---\n';
             comment += '_For detailed analysis, run the following command on your branch:_\n';
             comment += '```bash\n';
-            comment += 'php -d memory_limit=512M artisan insights -n --ansi\n';
+            comment += 'php -d memory_limit=512M artisan insights\n';
             comment += '```';
 
             // PRにコメント投稿
