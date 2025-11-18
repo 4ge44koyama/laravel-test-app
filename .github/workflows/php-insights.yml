@@ -48,26 +48,6 @@ jobs:
         run: |
           php artisan insights -n --ansi --format=json > phpinsights.json || true
 
-      - name: Convert JSON to reviewdog format
-        run: |
-          cat phpinsights.json | jq -r '
-            .. | 
-            objects | 
-            select(.file != null and .line != null) | 
-            "\(.file):\(.line):1: \(.message)"
-          ' > phpinsights.txt
-
-      - name: Setup reviewdog
-        uses: reviewdog/action-setup@v1
-
-      - name: Report via reviewdog
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cat phpinsights.txt | reviewdog -efm="%f:%l:%c: %m" \
-            -name="PHP-Insights" -reporter=github-pr-review \
-            -filter-mode=diff_context -fail-on-error=false
-
       - name: Comment PR with Summary
         uses: actions/github-script@v7
         with:
@@ -117,25 +97,28 @@ jobs:
             comment += `- 🎨 Style: ${styleIssues} issues\n`;
             comment += `- 🏗️ Architecture: ${architectureIssues} issues\n\n`;
 
-            // トップ5の問題
+            // トップ10の問題
             const allIssues = [...(results.Code || []), ...(results.Style || [])];
             const issuesWithLine = allIssues.filter(i => i.file && i.line);
 
             if (issuesWithLine.length > 0) {
               comment += '### 🔍 Top Issues\n\n';
-              const top5 = issuesWithLine.slice(0, 5);
-              top5.forEach((issue, idx) => {
+              const top10 = issuesWithLine.slice(0, 10);
+              top10.forEach((issue, idx) => {
                 const file = issue.file.replace(/^.*\/laravel-test-app\//, '');
                 comment += `${idx + 1}. **${issue.title}** in \`${file}:${issue.line}\`\n`;
               });
 
-              if (issuesWithLine.length > 5) {
-                comment += `\n_...and ${issuesWithLine.length - 5} more issues_\n`;
+              if (issuesWithLine.length > 10) {
+                comment += `\n_...and ${issuesWithLine.length - 10} more issues_\n`;
               }
             }
 
             comment += '\n---\n';
-            comment += '_💡 Detailed feedback available in the Files Changed tab_';
+            comment += '_For detailed analysis, run the following command on your branch:_\n';
+            comment += '```bash\n';
+            comment += 'php -d memory_limit=512M artisan insights -n --ansi\n';
+            comment += '```';
 
             // PRにコメント投稿
             await github.rest.issues.createComment({
