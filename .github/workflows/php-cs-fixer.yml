@@ -11,8 +11,7 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'php-cs-fixer')
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: write # PRに対してコミットをプッシュするために必要
+      contents: write # PHPフォーマッターによるコミットをプッシュするために必要
     env:
       HEAD_REF: ${{ github.head_ref }}
       BASE_REF: ${{ github.base_ref }}
