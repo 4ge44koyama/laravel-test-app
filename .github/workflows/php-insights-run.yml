@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -51,12 +51,17 @@ jobs:
       - name: Save PR Number
         run: |
           mkdir -p ./insights-result
-          echo "${{ github.event.workflow_run.pull_requests[0].number }}" > ./insights-result/pr-number.txt
+          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No pull request associated with this workflow run."
+            exit 1
+          fi
+          echo "$PR_NUMBER" > ./insights-result/pr-number.txt
           cp phpinsights.json ./insights-result/phpinsights.json
 
       # アーティファクトとして保存してphp-insights-report.ymlから取得できるようにしておく
       - name: Upload PHP Insights Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: insights-results
           path: ./insights-result/
