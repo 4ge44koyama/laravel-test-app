@@ -13,7 +13,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read #　読み取りのみ
+      contents: read # 読み取りのみ
       pull-requests: write # PRにコメント投稿するために必要
 
     steps:
@@ -132,7 +132,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const prNumber = ${{ steps.verify.outputs.pr_number }};
+            const prNumber = '${{ steps.verify.outputs.pr_number }}';
 
             const { data: issue } = await github.rest.issues.get({
               owner: context.repo.owner,

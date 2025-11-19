@@ -10,12 +10,18 @@ jobs:
   php-cs-fixer:
     if: contains(github.event.pull_request.labels.*.name, 'php-cs-fixer')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # PRに対してコミットをプッシュするために必要
+    env:
+      HEAD_REF: ${{ github.head_ref }}
+      BASE_REF: ${{ github.base_ref }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -34,8 +40,8 @@ jobs:
         id: changed-files
         working-directory: ./
         run: |
-          git fetch origin ${{ github.base_ref }}
-          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD | grep '\.php$' || true)
+          git fetch origin ${{ env.BASE_REF }}
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR origin/${{ env.BASE_REF }}...HEAD | grep '\.php$' || true)
 
           FILTERED_FILES=""
           TARGET_DIRS="app config database routes tests"
@@ -56,8 +62,10 @@ jobs:
       - name: Dry Run PHP CS Fixer on changed files
         if: steps.changed-files.outputs.files != ''
         working-directory: ./
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
         run: |
-          for file in ${{ steps.changed-files.outputs.files }}; do
+          for file in $CHANGED_FILES; do
             if [ -f "$file" ]; then
               echo "[Dry Run]Formatting: $file"
               php-cs-fixer fix "$file" --config=.php-cs-fixer.dist.php --dry-run --verbose --diff --using-cache=no || true
@@ -67,8 +75,10 @@ jobs:
       - name: Run PHP CS Fixer on changed files
         if: steps.changed-files.outputs.files != ''
         working-directory: ./
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
         run: |
-          for file in ${{ steps.changed-files.outputs.files }}; do
+          for file in $CHANGED_FILES; do
             if [ -f "$file" ]; then
               echo "Formatting: $file"
               php-cs-fixer fix "$file" --config=.php-cs-fixer.dist.php --verbose --diff --using-cache=no
@@ -76,14 +86,16 @@ jobs:
           done
 
       - name: Commit changes
+        env:
+          CHANGED_FILES: ${{ steps.changed-files.outputs.files }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add ${{ steps.changed-files.outputs.files }}
+          git add $CHANGED_FILES
           git diff --quiet && git diff --staged --quiet || git commit -m "[Auto] Apply PHP CS Fixer formatting"
 
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref }}
