@@ -39,4 +39,13 @@ class Article extends Model
     {
         return $this->belongsToMany('App\Tag')->withTimestamps();
     }
+
+    public function getXml(): string
+    {
+        $xml = <<<_XML_
+<?xml version="1.0" encoding="UTF-8" ?>
+_XML_;
+
+        return $xml;
+    }
 }
