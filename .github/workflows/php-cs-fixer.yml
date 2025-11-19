@@ -60,7 +60,7 @@ jobs:
           for file in ${{ steps.changed-files.outputs.files }}; do
             if [ -f "$file" ]; then
               echo "[Dry Run]Formatting: $file"
-              php-cs-fixer fix "$file" --config=.php-cs-fixer.php --dry-run --verbose --diff --using-cache=no || true
+              php-cs-fixer fix "$file" --config=.php-cs-fixer.dist.php --dry-run --verbose --diff --using-cache=no || true
             fi
           done
 
