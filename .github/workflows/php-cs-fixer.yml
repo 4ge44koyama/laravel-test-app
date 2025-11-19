@@ -71,7 +71,7 @@ jobs:
           for file in ${{ steps.changed-files.outputs.files }}; do
             if [ -f "$file" ]; then
               echo "Formatting: $file"
-              php-cs-fixer fix "$file" --config=.php-cs-fixer.php --verbose --diff --using-cache=no
+              php-cs-fixer fix "$file" --config=.php-cs-fixer.dist.php --verbose --diff --using-cache=no
             fi
           done
 
