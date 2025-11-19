@@ -12,7 +12,7 @@ class Article extends Model
         'title',
         'body',
     ];
-    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
@@ -26,7 +26,7 @@ class Article extends Model
     public function isLikedBy(?User $user): bool
     {
         return $user
-            ? (bool)$this->likes->where('id', $user->id)->count()
+            ? (bool) $this->likes->where('id', $user->id)->count()
             : false;
     }
 
@@ -38,5 +38,14 @@ class Article extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany('App\Tag')->withTimestamps();
+    }
+
+    public function getXml(): string
+    {
+        $xml = <<<_XML_
+<?xml version="1.0" encoding="UTF-8" ?>
+_XML_;
+
+        return $xml;
     }
 }
